@@ -24,7 +24,7 @@ namespace InventoryApplication {
         // do the add quantity.
 
         public void ShowProducts() {
-            if(_products.Count != 0) {
+            if(_products.Count == 0) {
                 Console.WriteLine("No products exist in inv, time to add?");
                 return; // probs return writeline? check later.
             }

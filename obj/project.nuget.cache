@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "csA5WO7lc0KV9ZRMD8rJMpFG4uMYwY/+Dx6qI2lCeaXqm7op4q3SKNIK1gxkfg3RydO8VInK7zHjvN1U9dZDjw==",
+  "success": true,
+  "projectFilePath": "/home/v1rushb/Foothill/Inv/Simple Inventory Management System/Simple Inventory Management System.csproj",
+  "expectedPackageFiles": [
+    "/home/v1rushb/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.7/microsoft.aspnetcore.app.ref.8.0.7.nupkg.sha512"
+  ],
+  "logs": []
+}

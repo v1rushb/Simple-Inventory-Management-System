@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 namespace InventoryApplication {
     class Program {
         internal static void Main(string[] args) {
-            Inventory inv = new Inventory();
+            Inventory inv = new();
 
             while(true) {
                 Console.WriteLine("1. Add Product");

@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Runtime.CompilerServices;
 
 namespace InventoryApplication {
 
@@ -37,16 +33,21 @@ namespace InventoryApplication {
         public void EditProduct(string name) {
             var product = _products.Find(el => el.Name.Equals(name));
 
+            if(product == null) {
+                Console.WriteLine("No such product exists.");
+                return;
+            }
+
             if(product != null) {
                 Console.WriteLine($"Current Product: {product}");
-                Console.WriteLine("Enter the new name.");
+                Console.WriteLine("Enter the new name. (Press `Enter` to keep the current quantity):");
 
                 string? newName = Console.ReadLine();
                 if(!string.IsNullOrWhiteSpace(newName)) {
                     product.Name = newName;
                 }
 
-                Console.Write("Enter new price: ");
+                Console.Write("Enter new price. (Press `Enter` to keep the current quantity): ");
 
                 string pricestr = Console.ReadLine();
 
@@ -54,7 +55,7 @@ namespace InventoryApplication {
                     product.Price = res;
                 }
 
-                Console.Write("Enter new quantity (leave empty to keep the current quantity): ");
+                Console.Write("Enter new quantity. (Press `Enter` to keep the current quantity): ");
                 string quantitystr = Console.ReadLine();
                 
                 if(int.TryParse(quantitystr, out int quantityint)) {

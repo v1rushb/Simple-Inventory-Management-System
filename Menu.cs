@@ -1,8 +1,4 @@
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
+using InventoryApplication.Repositories;
 
 namespace InventoryApplication {
     class Menu {
@@ -70,7 +66,7 @@ namespace InventoryApplication {
             Console.WriteLine("Please enter the quantity of that product: ");
             int quantity = _utils.GetValidatedIntInput();
             Console.Clear();
-            _inv.AddProduct(new Product(name, price, quantity)); // probs simplify? ask later.
+            _inv.AddProduct(new Product { Name = name, Price = price, Quantity = quantity}); // probs simplify? ask later.
             _utils.Delay(2);
             Console.Clear();
         }
@@ -84,7 +80,39 @@ namespace InventoryApplication {
         private void EditProduct() {
             Console.WriteLine("Enter the name of the product: ");
             string name = _utils.GetValidatedStringInput();
-            _inv.EditProduct(name);
+
+            var existingProduct = _inv.GetProductByName(name);
+            if (existingProduct == null)
+            {
+                Console.WriteLine("No such product exists.");
+                _utils.Delay(2);
+                Console.Clear();
+                return;
+            }
+
+            System.Console.WriteLine($"Current Product: {existingProduct}");
+
+            System.Console.WriteLine("Enter the new name (or press Enter to keep the current name):");
+            string newName = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(newName))
+            {
+                existingProduct.Name = newName;
+            }
+
+            System.Console.Write("Enter new price (or press Enter to keep the current price): ");
+            string priceInput = Console.ReadLine();
+            if (decimal.TryParse(priceInput, out decimal newPrice))
+            {
+                existingProduct.Price = newPrice;
+            }
+
+            System.Console.Write("Enter new quantity (or press Enter to keep the current quantity): ");
+            string quantityInput = Console.ReadLine();
+            if (int.TryParse(quantityInput, out int newQuantity))
+            {
+                existingProduct.Quantity = newQuantity;
+            }
+            _inv.EditProduct(existingProduct);
             _utils.Delay(2);
             Console.Clear();
         }

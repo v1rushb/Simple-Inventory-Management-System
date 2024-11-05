@@ -1,5 +1,3 @@
-using System;
-
 namespace InventoryApplication {
     public class Product {
 
@@ -7,6 +5,7 @@ namespace InventoryApplication {
         public decimal Price { get; set; }
         public int Quantity {get; set ;} 
 
+        public Product() {}
         public Product(string name, decimal price, int quantity) {
             Name = name;
             Price = price;

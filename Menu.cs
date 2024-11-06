@@ -1,11 +1,12 @@
 using InventoryApplication.Repositories;
+using InventoryApplication.Services;
 
 namespace InventoryApplication {
     class Menu {
-        private Inventory _inv;
-        private MenuUtils _utils;
+        private readonly InventoryService _inv;
+        private readonly MenuUtils _utils;
 
-        public Menu(Inventory inv, MenuUtils utils) {
+        public Menu(InventoryService inv, MenuUtils utils) {
             _inv = inv;
             _utils = utils;
         }
@@ -21,7 +22,7 @@ namespace InventoryApplication {
         }
 
 
-        public void Start() {
+        public async Task StartAsync() {
             Console.Clear();
             while(true) {
                 DisplayMenu();
@@ -31,22 +32,22 @@ namespace InventoryApplication {
                 {
                     case 1:
                         Console.Clear();
-                        AddProduct();
+                        await AddProductAsync();
                         break;
                     case 2:
-                        ShowProducts();
+                        await ShowProductsAsync();
                         break;
                     case 3:
                         Console.Clear();
-                        EditProduct();
+                        await EditProductAsync();
                         break;
                     case 4:
                         Console.Clear();
-                        DeleteProduct();
+                        await DeleteProductAsync();
                         break;
                     case 5:
                         Console.Clear();
-                        SearchProduct();
+                        await SearchProductAsync();
                         break;
                     case 6:
                         Console.Clear();
@@ -58,7 +59,7 @@ namespace InventoryApplication {
             } 
         }
 
-        private void AddProduct() {
+        private async Task AddProductAsync() {
             Console.WriteLine("Please enter product name: ");
             string name = _utils.GetValidatedStringInput();
             Console.WriteLine("Please enter the price: ");
@@ -66,76 +67,73 @@ namespace InventoryApplication {
             Console.WriteLine("Please enter the quantity of that product: ");
             int quantity = _utils.GetValidatedIntInput();
             Console.Clear();
-            _inv.AddProduct(new Product { Name = name, Price = price, Quantity = quantity}); // probs simplify? ask later.
+            await _inv.AddProductAsync(new Product { Name = name, Price = price, Quantity = quantity}); // probs simplify? ask later.
             _utils.Delay(2);
             Console.Clear();
         }
 
-        private void ShowProducts() {
+        private async Task ShowProductsAsync() {
             Console.Clear();
-            _inv.ShowProducts();
+            await _inv.ShowProductsAsync();
             GetBackToMenu();
         }
 
-        private void EditProduct() {
+        private async Task EditProductAsync()
+        {
             Console.WriteLine("Enter the name of the product: ");
             string name = _utils.GetValidatedStringInput();
 
-            var existingProduct = _inv.GetProductByName(name);
-            if (existingProduct == null)
-            {
-                Console.WriteLine("No such product exists.");
-                _utils.Delay(2);
-                Console.Clear();
-                return;
-            }
+            Console.WriteLine("What would you like to edit?");
+            Console.WriteLine("1. Name");
+            Console.WriteLine("2. Price");
+            Console.WriteLine("3. Quantity");
+            Console.Write("Choose an option: ");
+            int option = _utils.GetValidatedInput();
 
-            System.Console.WriteLine($"Current Product: {existingProduct}");
-
-            System.Console.WriteLine("Enter the new name (or press Enter to keep the current name):");
-            string newName = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(newName))
+            switch (option)
             {
-                existingProduct.Name = newName;
+                case 1:
+                    Console.WriteLine("Enter the new name:");
+                    string newName = _utils.GetValidatedStringInput();
+                    await _inv.EditProductNameAsync(name, newName);
+                    break;
+                case 2:
+                    Console.WriteLine("Enter the new price:");
+                    decimal newPrice = _utils.GetValidatedDecimalInput();
+                    await _inv.EditProductPriceAsync(name, newPrice);
+                    break;
+                case 3:
+                    Console.WriteLine("Enter the new quantity:");
+                    int newQuantity = _utils.GetValidatedIntInput();
+                    await _inv.EditProductQuantityAsync(name, newQuantity);
+                    break;
+                default:
+                    Console.WriteLine("Invalid option.");
+                    break;
             }
-
-            System.Console.Write("Enter new price (or press Enter to keep the current price): ");
-            string priceInput = Console.ReadLine();
-            if (decimal.TryParse(priceInput, out decimal newPrice))
-            {
-                existingProduct.Price = newPrice;
-            }
-
-            System.Console.Write("Enter new quantity (or press Enter to keep the current quantity): ");
-            string quantityInput = Console.ReadLine();
-            if (int.TryParse(quantityInput, out int newQuantity))
-            {
-                existingProduct.Quantity = newQuantity;
-            }
-            _inv.EditProduct(existingProduct);
             _utils.Delay(2);
             Console.Clear();
         }
 
-        private void DeleteProduct() {
+        private async Task DeleteProductAsync() {
             Console.WriteLine("Enter the name of the product you wish to yoink: ");
             string name = _utils.GetValidatedStringInput();
-            _inv.DeleteProduct(name);
+            await _inv.DeleteProductAsync(name);
             _utils.Delay(2);
             Console.Clear();
         }
 
-        private void SearchProduct() {
+        private async Task SearchProductAsync() {
             Console.WriteLine("Enter the name of the product you wish to look up for: ");
             string name = _utils.GetValidatedStringInput();
-            _inv.SearchProduct(name);
-            ContinueSearching();
+            await _inv.SearchProductAsync(name);
+            await ContinueSearchingAsync();
         }
         
         private void ShowGetBacktToMenu() {
             Console.WriteLine("Get back to menu? [(y)es/(n)o]");
         }
-        private void GetBackToMenu() {
+        private async Task GetBackToMenu() {
             ShowGetBacktToMenu();
             string userResponse = _utils.GetValidetdYesOrNoString();
             bool decision = _utils.getDecision(userResponse);
@@ -143,20 +141,20 @@ namespace InventoryApplication {
                 Console.Clear();
             } else {
                 Console.Clear();
-                ShowProducts();
+                await ShowProductsAsync();
             } // hmmm probably edit later to be recursive? not optimal but cooler.
         }
 
         private void DisplayContinueSearching() {
             Console.WriteLine("Do you wish to continue your search?");
         }
-        private void ContinueSearching() {
+        private async Task ContinueSearchingAsync() {
             DisplayContinueSearching();
             string userResponse = _utils.GetValidetdYesOrNoString();
             bool decision = _utils.getDecision(userResponse);
             if(decision) {
                 Console.Clear();
-                SearchProduct();
+                await SearchProductAsync();
             } else {
                 Console.Clear();
             }

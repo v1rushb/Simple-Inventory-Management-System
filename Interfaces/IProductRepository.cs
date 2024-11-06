@@ -1,12 +1,11 @@
 using InventoryApplication;
 
-namespace InventoryApplication.Interfaces {
-    public interface IProductRepository {
-        void AddProduct(Product product);
-        IEnumerable<Product> GetAllProducts();
-        Product GetProductByName(string name);
-        void UpdateProduct(Product product);
-        void DeleteProduct(string name);
-    }
-
+public interface IProductRepository
+{
+    Task AddProductAsync(Product product);
+    Task DeleteProductAsync(string? name);
+    Task EditProductNameAsync(string? name, string? newName);
+    Task EditProductPriceAsync(string? name, decimal newPrice);
+    Task EditProductQuantityAsync(string? name, int newQuantity);
+    Task<List<Product>> GetAllProductsAsync();
 }

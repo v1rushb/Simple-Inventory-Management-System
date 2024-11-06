@@ -7,9 +7,12 @@ namespace InventoryApplication.Repositories
     public class MySQLProductRepository : IProductRepository, IDisposable
     {
         private readonly SqlConnection _connection;
+        private readonly DatabaseConnectionManager _databaseConnectionManager;
 
-        public MySQLProductRepository() {
-            _connection = DatabaseConnectionManager.GetConnection();
+        public MySQLProductRepository(DatabaseConnectionManager databaseConnectionManager) {
+            _databaseConnectionManager = databaseConnectionManager;
+            _connection = _databaseConnectionManager.GetConnection();
+
         }
 
         public async Task AddProductAsync(Product product)
